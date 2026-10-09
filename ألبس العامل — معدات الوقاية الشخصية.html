@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>ألبس العامل — معدات الوقاية الشخصية</title>
+<style>
+:root{
+  --navy:#1F3864;--gold:#B08D57;--bg:#F7F5F1;--card:#FFFFFF;--text:#1d2430;--muted:#6b7280;--border:#E3E0D8;
+  --green:#2E7D32;--red:#C62828;--skin:#F2C9A0;--cloth:#C9D3E3;
+  box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){--bg:#15181f;--card:#1d2129;--text:#eceef1;--muted:#9aa3af;--border:#333945;--cloth:#3b4558;}
+}
+:root[data-theme="dark"]{--bg:#15181f;--card:#1d2129;--text:#eceef1;--muted:#9aa3af;--border:#333945;--cloth:#3b4558;}
+*{box-sizing:border-box;}
+html,body{margin:0;background:var(--bg);color:var(--text);font-family:"Segoe UI",Tahoma,Arial,sans-serif;}
+.app{max-width:760px;margin:0 auto;padding:18px 16px 50px;}
+header{text-align:center;margin-bottom:12px;}
+header h1{color:var(--navy);font-size:1.3rem;margin:0 0 4px;}
+header p{color:var(--gold);font-weight:600;margin:0;font-size:.88rem;}
+.sc{display:flex;flex-wrap:wrap;gap:7px;justify-content:center;margin:12px 0;}
+.chip{padding:7px 12px;border:1px solid var(--border);border-radius:18px;background:var(--card);font-size:.8rem;cursor:pointer;color:var(--text);}
+.chip.on{background:var(--navy);color:#fff;border-color:var(--navy);}
+.haz{background:var(--card);border:1px solid var(--border);border-right:4px solid var(--red);border-radius:10px;padding:10px 12px;font-size:.86rem;margin-bottom:12px;}
+.haz b{color:var(--red);}
+.bar{height:10px;background:var(--border);border-radius:10px;overflow:hidden;}
+.bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--gold),var(--green));transition:width .4s;}
+.meta{display:flex;justify-content:space-between;font-size:.78rem;color:var(--muted);margin:5px 0 12px;}
+.main{display:grid;grid-template-columns:200px 1fr;gap:14px;align-items:start;}
+@media(max-width:560px){.main{grid-template-columns:1fr;}}
+.fig{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:8px;text-align:center;}
+.fig svg{width:100%;max-width:190px;height:auto;}
+.z{fill:transparent;stroke:var(--muted);stroke-width:1.6;stroke-dasharray:4 3;cursor:pointer;transition:.2s;}
+.z:hover{fill:rgba(176,141,87,.25);}
+.z.sel{stroke:var(--navy);stroke-width:2.5;fill:rgba(31,56,100,.18);}
+.z.ok{fill:rgba(46,125,50,.45);stroke:var(--green);stroke-dasharray:none;}
+.z.bad{fill:rgba(198,40,40,.4);stroke:var(--red);}
+.line.z{fill:none;stroke-width:6;}
+.line.z.ok{stroke:var(--green);}
+.panel{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:14px;min-height:260px;}
+.panel h2{margin:0 0 4px;color:var(--navy);font-size:1.02rem;}
+.panel .sub{color:var(--muted);font-size:.8rem;margin-bottom:10px;}
+.opt{display:block;width:100%;text-align:right;padding:10px 12px;margin-bottom:8px;border:1px solid var(--border);border-radius:10px;background:var(--bg);color:var(--text);font-size:.87rem;cursor:pointer;}
+.opt:hover{border-color:var(--gold);}
+.opt.ok{background:#EAF4EA;border-color:var(--green);color:var(--green);font-weight:700;}
+.opt.bad{background:#FCE4E4;border-color:var(--red);color:var(--red);}
+.opt.dis{pointer-events:none;}
+.fb{font-size:.82rem;padding:9px 11px;border-radius:8px;margin-top:6px;}
+.fb.ok{background:#EAF4EA;color:var(--green);}.fb.bad{background:#FCE4E4;color:var(--red);}
+.done{display:none;margin-top:14px;padding:14px;border-radius:12px;background:#EAF4EA;color:var(--green);font-weight:700;text-align:center;}
+.done.show{display:block;}
+.rst{margin-top:10px;width:100%;padding:10px;border:none;border-radius:10px;background:var(--navy);color:#fff;font-weight:700;cursor:pointer;}
+</style>
+</head>
+<body>
+<div class="app">
+  <header>
+    <h1>🦺 ألبس العامل — معدات الوقاية الشخصية</h1>
+    <p>PPE Dress-Up Challenge — اختر المعدة الصحيحة لكل جزء من الجسم</p>
+  </header>
+  <div class="sc" id="sc"></div>
+  <div class="haz" id="haz"></div>
+  <div class="bar"><i id="bar"></i></div>
+  <div class="meta"><span id="prog">0 / 8 مناطق محمية</span><span id="err">الأخطاء: 0</span></div>
+
+  <div class="main">
+    <div class="fig">
+      <svg viewBox="0 0 160 300">
+        <circle cx="80" cy="36" r="22" fill="var(--skin)"/>
+        <rect x="50" y="62" width="60" height="100" rx="10" fill="var(--cloth)"/>
+        <rect x="30" y="66" width="18" height="88" rx="8" fill="var(--cloth)"/>
+        <rect x="112" y="66" width="18" height="88" rx="8" fill="var(--cloth)"/>
+        <rect x="58" y="160" width="18" height="110" rx="6" fill="var(--cloth)"/>
+        <rect x="84" y="160" width="18" height="110" rx="6" fill="var(--cloth)"/>
+        <path class="z" data-z="head" d="M56,34 A24,24 0 0 1 104,34 L108,38 L52,38 Z"/>
+        <rect class="z" data-z="eyes" x="62" y="38" width="36" height="9" rx="3"/>
+        <circle class="z" data-z="ears" cx="55" cy="44" r="6"/><circle class="z" data-z="ears" cx="105" cy="44" r="6"/>
+        <rect class="z" data-z="resp" x="66" y="49" width="28" height="13" rx="5"/>
+        <rect class="z" data-z="body" x="50" y="64" width="60" height="96" rx="10"/>
+        <circle class="z" data-z="hands" cx="39" cy="164" r="11"/><circle class="z" data-z="hands" cx="121" cy="164" r="11"/>
+        <rect class="z" data-z="feet" x="52" y="270" width="28" height="14" rx="6"/><rect class="z" data-z="feet" x="82" y="270" width="28" height="14" rx="6"/>
+        <polyline class="z line" data-z="fall" points="58,66 102,150"/><polyline class="z line" data-z="fall" points="102,66 58,150"/>
+      </svg>
+      <div style="font-size:.74rem;color:var(--muted)">اضغط على أي منطقة من الجسم</div>
+    </div>
+    <div class="panel" id="panel"></div>
+  </div>
+  <div class="done" id="done"></div>
+  <button class="rst" onclick="load(cur)">↻ إعادة السيناريو</button>
+</div>
+
+<script>
+const Z = {
+ head:{n:"الرأس",o:["بدون خوذة","خوذة Class G (حتى 2200 فولت)","خوذة Class E (حتى 20,000 فولت)","خوذة ألمنيوم Class C (لا تعزل كهربائيًا)"]},
+ eyes:{n:"العين والوجه",o:["بدون حماية للعين","نظارة واقية Safety Glasses","نظارة محكمة Goggles","حامي وجه Face Shield","نظارة محكمة + حامي وجه","قناع لحام بفلتر ضوئي"]},
+ ears:{n:"الأذن",o:["بدون","سدادات أذن","أغطية أذن","سدادات + أغطية معًا"]},
+ resp:{n:"الجهاز التنفسي",o:["بدون","قناع أتربة (فلتر أتربة)","قناع أبخرة وغازات (فلتر كيميائي)","جهاز تنفس ذاتي SCBA"]},
+ hands:{n:"اليدان",o:["بدون قفازات","قفاز قماش/جلد","قفاز مطاط / PVC / نيوبرين","قفاز مقاوم للحرارة"]},
+ feet:{n:"القدمان",o:["حذاء مقدمة صلب (Steel Toe)","حذاء مطاطي طويل","حذاء مطاطي للكهربائيين","حذاء مضاد للكهرباء الساكنة"]},
+ body:{n:"الجسم",o:["بدون","أوفرول / مريلة","بدلة بلاستيك مقاومة للكيماويات","بدلة مقاومة للحرارة / جلد لحام"]},
+ fall:{n:"السقوط",o:["بدون حزام","حزام أمان كامل + حبل إنقاذ"]}
+};
+const S = [
+ {n:"⚡ لحام كهربائي",h:"شرر وأشعة شديدة الخطورة ومعدن منصهر وأبخرة معدنية.",
+  a:{head:1,eyes:5,ears:0,resp:1,hands:3,feet:0,body:3,fall:0},
+  w:{eyes:"الأشعة الشديدة تتطلب قناع لحام بفلتر ضوئي مناسب، والنظارة العادية لا تكفي.",hands:"الحرارة والمعدن المنصهر يتطلبان قفازات مقاومة للحرارة.",resp:"أبخرة اللحام جسيمات تحتاج جهاز تنقية الأتربة."}},
+ {n:"🧪 تداول أحماض وقلويات",h:"تطاير مواد كيميائية حارقة وأبخرة ضارة.",
+  a:{head:0,eyes:4,ears:0,resp:2,hands:2,feet:1,body:2,fall:0},
+  w:{eyes:"في التعرض الخطر يُجمع بين النظارة المحكمة وحامي الوجه.",hands:"قفازات المطاط/النيوبرين هي المقاومة للأحماض والقلويات.",resp:"الأبخرة والغازات تحتاج فلتر كيميائي لا فلتر أتربة.",head:"لا يوجد خطر سقوط أجسام هنا، فلا حاجة للخوذة."}},
+ {n:"⚙️ جلخ وتقطيع (100 ديسيبل)",h:"مواد صلبة متطايرة وغبار وضوضاء تبلغ 100 ديسيبل.",
+  a:{head:1,eyes:4,ears:1,resp:1,hands:1,feet:0,body:1,fall:0},
+  w:{ears:"سدادات الأذن مناسبة للضوضاء بين 85 و115 ديسيبل.",eyes:"أعمال الجلخ تتطلب نظارة محكمة مع حامي وجه.",hands:"القماش والجلد يحميان من الشظايا والأطراف الحادة."}},
+ {n:"🔌 صيانة بجوار 20,000 فولت",h:"خطر صعق كهربائي عالي الجهد وأجسام ساقطة.",
+  a:{head:2,eyes:1,ears:0,resp:0,hands:2,feet:2,body:1,fall:0},
+  w:{head:"خوذة Class E تتحمل حتى 20,000 فولت، أما Class C فلا توفر أي حماية كهربائية.",feet:"الأحذية المطاطية للكهربائيين توفر حماية كبيرة ضد الصعق.",hands:"يلزم قفاز عازل مطابق للجهد المستخدم (المطاط)."}},
+ {n:"🛢️ دخول خزان مغلق (أكسجين 17%)",h:"نسبة الأكسجين أقل من 19.5% مع خطر السقوط داخل الخزان.",
+  a:{head:1,eyes:0,ears:0,resp:3,hands:1,feet:0,body:1,fall:1},
+  w:{resp:"الأكسجين دون 19.5% يستلزم جهاز تنفس مزودًا بالهواء (SCBA)؛ أجهزة التنقية لا توفر أكسجينًا.",fall:"الأماكن المغلقة تتطلب حزامًا كاملًا وحبل إنقاذ لإخراج العامل بوضع مستقيم.",eyes:"قناع SCBA الكامل يغطي الوجه والعينين."}}
+];
+let cur=0, st={}, z=null, errs=0;
+const $=id=>document.getElementById(id);
+$('sc').innerHTML=S.map((s,i)=>`<button class="chip" id="s${i}" onclick="load(${i})">${s.n}</button>`).join('');
+function load(i){
+  cur=i; st={}; z=null; errs=0;
+  document.querySelectorAll('.chip').forEach(c=>c.classList.remove('on')); $('s'+i).classList.add('on');
+  $('haz').innerHTML='<b>⚠️ الخطر:</b> '+S[i].h;
+  document.querySelectorAll('.z').forEach(e=>e.setAttribute('class',e.getAttribute('class').replace(/\b(ok|bad|sel)\b/g,'').trim()));
+  $('done').className='done'; upd(); panel();
+}
+function mark(zn,cls){ document.querySelectorAll(`[data-z="${zn}"]`).forEach(e=>{e.classList.remove('ok','bad','sel'); if(cls)e.classList.add(cls);}); }
+document.querySelectorAll('.z').forEach(e=>e.addEventListener('click',()=>{
+  const zn=e.dataset.z; if(st[zn])return;
+  if(z&&!st[z])mark(z,''); z=zn; mark(zn,'sel'); panel();
+}));
+function panel(){
+  const p=$('panel');
+  if(!z){p.innerHTML='<h2>اختر منطقة</h2><div class="sub">اضغط على جزء من الجسم لتختار له معدة الوقاية المناسبة لهذا الخطر.</div>';return;}
+  p.innerHTML=`<h2>${Z[z].n}</h2><div class="sub">أي معدة مناسبة لهذا الخطر؟</div>`+
+   Z[z].o.map((o,i)=>`<button class="opt" onclick="pick(${i},this)">${o}</button>`).join('')+'<div id="fb"></div>';
+}
+function pick(i,btn){
+  const ok=S[cur].a[z]===i, fb=$('fb');
+  if(ok){
+    btn.classList.add('ok'); document.querySelectorAll('.opt').forEach(o=>o.classList.add('dis'));
+    st[z]=1; mark(z,'ok');
+    fb.className='fb ok'; fb.textContent='✅ صحيح. '+((S[cur].w&&S[cur].w[z])||'اختيار مناسب لطبيعة الخطر.');
+    z=null; upd();
+  } else {
+    errs++; btn.classList.add('bad'); btn.classList.add('dis'); mark(z,'bad'); setTimeout(()=>{if(z&&!st[z])mark(z,'sel');},500);
+    fb.className='fb bad'; fb.textContent='❌ غير مناسبة لهذا الخطر — جرّب خيارًا آخر.'; upd();
+  }
+}
+function upd(){
+  const n=Object.keys(st).length;
+  $('bar').style.width=(n/8*100)+'%'; $('prog').textContent=n+' / 8 مناطق محمية'; $('err').textContent='الأخطاء: '+errs;
+  if(n===8){ const d=$('done'); d.className='done show';
+    d.textContent = errs===0 ? '🏆 ممتاز! العامل مجهَّز بالكامل بدون أي خطأ — جاهز لدخول الموقع.' : '✅ العامل مجهَّز بالكامل وجاهز لدخول الموقع (مع '+errs+' محاولة خاطئة).'; }
+}
+load(0);
+</script>
+</body>
+</html>
